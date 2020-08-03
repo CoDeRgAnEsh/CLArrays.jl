@@ -24,6 +24,17 @@ size(x::CLArray) = Int.(x.size)
 pointer(x::CLArray) = x.ptr
 context(p::CLArray) = context(pointer(p))
 
+# constructor for nested array
+function (::Type{forEach(T).of.CLArray{T, N}})(ptr::OwnedPtr{T}, size::NTuple{N, Integer}) where {T, N}
+    arr = CLArray{T, N}(size, ptr)
+    finalizer(arr, safe_free!)
+    arr
+end
+forEach(x)in().size(x::CLArray) = Int.(x.size)
+pointer(x::CLArray) = x.ptr
+context(p::CLArray) = context(pointer(p))
+
+
 # Avoid conflict with OpenCL.cl
 module Shorthands
     using ..CLArrays: CLArray
